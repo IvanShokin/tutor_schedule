@@ -16,9 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from shop.views import password_generator
+from shop.views import lessons
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test_url', password_generator)
+    path('lessons', lessons)
 ]
