@@ -6,6 +6,6 @@ class Student(models.Model):
 
 
 class Lesson(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, related_name='lesson', on_delete=models.CASCADE)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
