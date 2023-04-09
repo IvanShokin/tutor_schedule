@@ -1,7 +1,7 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 
-from tutor.models import Student, Lesson
-from datetime import datetime
+from tutor.models import Student
+
 
 
 def lessons(request):
