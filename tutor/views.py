@@ -1,6 +1,7 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 
-from tutor.models import Student
+from tutor.models import Student, Lesson
+from datetime import datetime
 
 
 def lessons(request):
@@ -8,7 +9,9 @@ def lessons(request):
     a = {}
     for student in Student.objects.all():
         a[student.first_name] = []
-        for lesson in student.lesson.values_list('start_datetime', 'end_datetime'):
+        L1 = student.lesson.filter(start_datetime__iso_week_day__gte=1) & student.lesson.filter(
+            start_datetime__iso_week_day__lte=7)
+        for lesson in L1.values_list('start_datetime', 'end_datetime'):
             datetime_list = [
                 lesson[0].strftime("%Y %m %d %H:%M"),
                 lesson[1].strftime("%Y %m %d %H:%M")

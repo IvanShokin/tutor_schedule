@@ -1,12 +1,12 @@
-from django.db import models
+from django.db.models import Model, CharField, ForeignKey, DateTimeField, CASCADE
 
 
-class Student(models.Model):
-    first_name = models.CharField(max_length=256)
+class Student(Model):
+    first_name = CharField(max_length=256)
 
 
-class Lesson(models.Model):
-    student = models.ForeignKey(Student, related_name='lesson', on_delete=models.CASCADE)
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
+class Lesson(Model):
+    student = ForeignKey(Student, related_name='lesson', on_delete=CASCADE)
+    start_datetime = DateTimeField()
+    end_datetime = DateTimeField()
 
