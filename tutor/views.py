@@ -1,7 +1,6 @@
-from django.http import JsonResponse
-
-from tutor.models import Student
-
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
+from tutor.models import Student, Lesson
 
 
 def lessons(request):
@@ -18,3 +17,18 @@ def lessons(request):
             ]
             a[student.first_name].append(datetime_list)
     return JsonResponse(a)
+
+
+def index(request):
+    lesson1 = Lesson.objects.all()
+    return render(request, "index.html", {'lessons': lesson1})
+
+
+def create(request):
+    if request.method == 'POST':
+        student = Student()
+        student.first_name = request.POST.get('first_name')
+        student.save()
+        lesson = Lesson(student=student, start_datetime=request.POST.get('start_datetime'), end_datetime=request.POST.get('end_datetime'))
+        lesson.save()
+    return HttpResponseRedirect("/")
