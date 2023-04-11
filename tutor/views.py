@@ -1,17 +1,16 @@
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from tutor.models import Student, Lesson
 
-from tutor.models import Student
+
+def index(request):
+    lessons_of_the_current_week = Lesson.objects.filter(
+        start_datetime__iso_week_day__gte=1, start_datetime__iso_week_day__lte=7)
+    return render(request, "index.html", {'lessons': lessons_of_the_current_week})
 
 
-def lessons(request):
-    # TODO values_list
-    a = {}
-    for student in Student.objects.all():
-        a[student.first_name] = []
-        for lesson in student.lesson.values_list('start_datetime', 'end_datetime'):
-            datetime_list = [
-                lesson[0].strftime("%Y %m %d %H:%M"),
-                lesson[1].strftime("%Y %m %d %H:%M")
-            ]
-            a[student.first_name].append(datetime_list)
-    return JsonResponse(a)
+def create(request):
+    if request.method == 'POST':
+        student = Student.objects.create(first_name=request.POST.get('first_name'))
+        Lesson.objects.create(student=student, start_datetime=request.POST.get('start_datetime'), end_datetime=request.POST.get('end_datetime'))
+    return HttpResponseRedirect("/")
