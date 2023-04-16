@@ -3,9 +3,7 @@ from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import render
 
-from tutor.form import UploadFileForm
 from tutor.models import Student, Lesson
-
 
 
 def index(request):
@@ -22,17 +20,3 @@ def student(request: HttpRequest, student_id):
         Student.objects.get(id=student_id).delete()
     return render(request=request, template_name="tutor/student.html", context={'students': students})
 
-
-def file_upload(request):
-    request_file = request.FILES.get('file')
-
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            tuf: TemporaryUploadedFile = form.cleaned_data.get('file')
-            fs = FileSystemStorage(location=r'C:\Users\Nerzhul\Desktop\Влад')
-            file = fs.save(tuf.name, tuf)
-            return HttpResponseRedirect('/')
-    else:
-        form = UploadFileForm()
-    return render(request, 'tutor/student.html', {'form': form})
