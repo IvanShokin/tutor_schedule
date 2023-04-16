@@ -1,6 +1,11 @@
-from django.http import HttpResponseRedirect
+from django.core.files.storage import FileSystemStorage
+from django.core.files.uploadedfile import TemporaryUploadedFile
+from django.http import HttpResponseRedirect, HttpRequest
 from django.shortcuts import render
+
+from tutor.form import UploadFileForm
 from tutor.models import Student, Lesson
+
 
 
 def index(request):
@@ -9,10 +14,25 @@ def index(request):
     return render(request, "tutor/index.html", {'lessons': lessons_of_the_current_week})
 
 
-def create(request):
+def student(request: HttpRequest, student_id):
+    students = Student.objects.all()
+
+    if request.method == 'DELETE':
+        # student_id = json.loads(request.body.decode()).get('student_id')
+        Student.objects.get(id=student_id).delete()
+    return render(request=request, template_name="tutor/student.html", context={'students': students})
+
+
+def file_upload(request):
+    request_file = request.FILES.get('file')
+
     if request.method == 'POST':
-        first_name = request.POST.get('first_name')
-        student = Student.objects.create(first_name=first_name)
-        start_datetime, end_datetime = request.POST.get('start_datetime'), request.POST.get('end_datetime')
-        Lesson.objects.create(student=student, start_datetime=start_datetime, end_datetime=end_datetime)
-    return HttpResponseRedirect("/")
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            tuf: TemporaryUploadedFile = form.cleaned_data.get('file')
+            fs = FileSystemStorage(location=r'C:\Users\Nerzhul\Desktop\Влад')
+            file = fs.save(tuf.name, tuf)
+            return HttpResponseRedirect('/')
+    else:
+        form = UploadFileForm()
+    return render(request, 'tutor/student.html', {'form': form})
