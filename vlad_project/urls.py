@@ -16,7 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from tutor.views import student, index, file_upload
 
 urlpatterns = [
     path('admin/', admin.site.urls),

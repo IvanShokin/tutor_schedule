@@ -1,9 +1,7 @@
-from django.core.files.storage import FileSystemStorage
-from django.core.files.uploadedfile import TemporaryUploadedFile
-from django.http import HttpResponseRedirect, HttpRequest
+from django.http import HttpRequest
 from django.shortcuts import render
 
-from tutor.models import Student, Lesson
+from tutor.models import Lesson, ProfileStudent
 
 
 def index(request):
@@ -13,10 +11,10 @@ def index(request):
 
 
 def student(request: HttpRequest, student_id):
-    students = Student.objects.all()
+    students = ProfileStudent.objects.all()
 
     if request.method == 'DELETE':
         # student_id = json.loads(request.body.decode()).get('student_id')
-        Student.objects.get(id=student_id).delete()
+        ProfileStudent.objects.get(id=student_id).delete()
     return render(request=request, template_name="tutor/student.html", context={'students': students})
 
