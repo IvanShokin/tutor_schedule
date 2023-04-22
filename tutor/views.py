@@ -1,20 +1,19 @@
-from django.http import HttpRequest
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.db import IntegrityError
+from rest_framework import status
+from rest_framework.generics import ListCreateAPIView
+from rest_framework.response import Response
 
 from tutor.models import Lesson, ProfileStudent
+from tutor.serializers import LessonSerializer, \
+    ProfileStudentResponseSerializer, ProfileStudentRequestSerializer
 
 
-def index(request):
-    lessons_of_the_current_week = Lesson.objects.filter(
-        start_datetime__iso_week_day__gte=1, start_datetime__iso_week_day__lte=7)
-    return render(request, "tutor/index.html", {'lessons': lessons_of_the_current_week})
+class LessonCreateView(ListCreateAPIView):
+    serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
 
 
-def student(request: HttpRequest, student_id):
-    students = ProfileStudent.objects.all()
-
-    if request.method == 'DELETE':
-        # student_id = json.loads(request.body.decode()).get('student_id')
-        ProfileStudent.objects.get(id=student_id).delete()
-    return render(request=request, template_name="tutor/student.html", context={'students': students})
-
+class ProfileStudentCreateView(ListCreateAPIView):
+    serializer_class = ProfileStudentResponseSerializer
+    queryset = ProfileStudent.objects.all()

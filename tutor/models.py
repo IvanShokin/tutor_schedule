@@ -1,17 +1,13 @@
-import datetime
-from pathlib import Path
-
 from django.contrib.auth.models import User
 from django.db.models import Model, IntegerField, DateTimeField, CASCADE, FileField, TextField, \
-    CharField, ForeignKey, OneToOneField, ManyToManyField
+    CharField, ForeignKey, OneToOneField, ManyToManyField, UUIDField
 
 
 class ProfileTeacher(Model):
     user = OneToOneField(User, on_delete=CASCADE)
 
-
 class ProfileStudent(Model):
-    user = OneToOneField(User, on_delete=CASCADE)
+    user = OneToOneField(User, on_delete=CASCADE, primary_key=True)
     teachers = ManyToManyField(ProfileTeacher, related_name='students', through='Lesson')
 
 
