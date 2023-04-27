@@ -1,13 +1,15 @@
-from django.contrib.auth.models import User
-from django.db.models import Model, IntegerField, DateTimeField, CASCADE, FileField, TextField, \
-    CharField, ForeignKey, OneToOneField, ManyToManyField, UUIDField
+from django.db.models import Model, IntegerField, DateTimeField, CASCADE, TextField, \
+    CharField, ForeignKey, OneToOneField, ManyToManyField
+
+from django.conf import settings
 
 
 class ProfileTeacher(Model):
-    user = OneToOneField(User, on_delete=CASCADE)
+    user = OneToOneField(settings.AUTH_USER_MODEL, on_delete=CASCADE)
+
 
 class ProfileStudent(Model):
-    user = OneToOneField(User, on_delete=CASCADE, primary_key=True)
+    user = OneToOneField(settings.AUTH_USER_MODEL, on_delete=CASCADE, primary_key=True)
     teachers = ManyToManyField(ProfileTeacher, related_name='students', through='Lesson')
 
 
